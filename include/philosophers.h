@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:19:55 by judenis           #+#    #+#             */
-/*   Updated: 2025/01/14 20:34:07 by judenis          ###   ########.fr       */
+/*   Updated: 2025/01/21 17:53:32 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,12 @@
 typedef struct s_philo
 {
     int id;
-    int last_meal;
+    long long last_meal;
     int meals_eaten;
-    bool is_dead;
-    pthread_mutex_t *left;
-    pthread_mutex_t *right;
-    pthread_mutex_t *eat_lock;
-    struct s_data   *data;    
+    int left;
+    int right;
+    struct s_data   *data;
+    pthread_t t_id;  
 }               t_philo;
 
 typedef struct s_data
@@ -41,7 +40,21 @@ typedef struct s_data
     int time_to_eat;
     int time_to_sleep;
     int number_of_meals;
+    long long start_time;
+    bool has_died;
+    bool has_all_eaten;
+    pthread_mutex_t printing;
+    pthread_mutex_t meal_check; //! A remplacer
+    pthread_mutex_t *forks;
     t_philo *philo;
 }               t_data;
+
+int routine_launch(t_data *data);
+
+long long	time_diff(long long past, long long pres);
+int check_args(char **av);
+void clean_printf(t_data *data, int id, char *str);
+long long timestamp(void);
+void smart_sleep(long long time, t_data *data);
 
 #endif

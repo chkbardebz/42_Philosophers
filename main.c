@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:17:10 by judenis           #+#    #+#             */
-/*   Updated: 2025/01/14 20:32:21 by judenis          ###   ########.fr       */
+/*   Updated: 2025/01/21 18:17:25 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@
 //? time_to_eat
 //? time_to_sleep
 //? [number of time each philo needs to eat]
+
+//* EAT
+//* SLEEP
+//* THINK
+//* REPEAT (WHILE NOBODY IS DEAD OR WHILE EVERYONE HASN'T EATEN THE AMOUNT OF TIMES REQUIRED)
 
 
 int	ft_isspace(int c)
@@ -54,54 +59,82 @@ int	ft_atoi(const char *str)
 	return (result);
 }
 
-t_data *data_init(int ac, char **av)
+int init_philo(t_data *data)
 {
-    t_data *data;
+    int i;
+
+    i = data->number_of_philo;
+    data->philo = (t_philo *)malloc(sizeof(t_philo) * data->number_of_philo);
+    if (data->philo == NULL)
+        return (1);
+    while (--i >= 0)
+    {
+        data->philo[i].id = i;
+        data->philo[i].last_meal = 0;
+        data->philo[i].meals_eaten = 0;
+        data->philo[i].left = i;
+        data->philo[i].right = (i + 1) % data->number_of_philo;
+        data->philo[i].data = data;
+    }
+    return (0);
+}
+
+int init_forks(t_data *data)
+{
+    int i;
     
-    data = (t_data *)malloc(sizeof(t_data));
-    if (!data)
-        return (NULL);
+    i = data->number_of_philo;
+    data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->number_of_philo);
+    if (data->forks == NULL)
+        return (1);
+    while (--i >= 0)
+    {
+        if (pthread_mutex_init(&(data->forks[i]), NULL))
+            return (1);
+    }
+	if (pthread_mutex_init(&(data->printing), NULL))
+		return (1);
+	if (pthread_mutex_init(&(data->meal_check), NULL))
+		return (1);
+    return (0);
+}
+
+int data_init(t_data *data, char **av)
+{
+    data->start_time = 0;
     data->number_of_philo = ft_atoi(av[1]);
     data->time_to_die = ft_atoi(av[2]);
     data->time_to_eat = ft_atoi(av[3]);
     data->time_to_sleep = ft_atoi(av[4]);
-    if (ac == 6)
-        data->number_of_meals = ft_atoi(av[5]);
-    else
-        data->number_of_meals = 0;
-    return (data);
-}
-
-int check_args(char **av)
-{
-    int i;
-    int j;
-
-    i = 1;
-    while (av[i])
+    data->has_died = 0;
+    data->has_all_eaten = 0;
+    if (data->number_of_philo < 1 || data->time_to_die < 0 || data->time_to_eat < 0 || data->time_to_sleep < 0)
+        return (1);
+    if (av[5])
     {
-        j = 0;
-        while (av[i][j])
-        {
-            if (av[i][j] < '0' || av[i][j] > '9')
-                return 1;
-            j++;
-        }
-        i++;
+        data->number_of_meals = ft_atoi(av[5]) - 1;
+        if (data->number_of_meals <= 0)
+            return (1);
     }
-    return 0;
+    else
+        data->number_of_meals = -1;
+    if (init_forks(data))
+        return (1);
+    init_philo(data);
+    return (0);
 }
 
 int main(int ac, char **av)
 {
-    t_data *data;
-    pthread_t thread;
-    
+    t_data data;
+   
+    printf("%lli \n\n", time_diff(timestamp(), timestamp()));
     if (ac < 5 || ac > 6)
         return (write(2, "Error\nInvalid number of arguments\n", 35));
     if (check_args(av) == 1)
         return (write(2, "Error\nInvalid arguments\n", 25));
-    data = data_init(ac, av);
-    pthread_create(&thread, NULL, routine_philo, data);
-    printf("nbr of philo : %d\ntime to die : %d\ntime to eat : %d\ntime to sleep : %d\nnbr of meals : %d\n", data->number_of_philo, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->number_of_meals);
+    if (data_init(&data, av) == 1)
+        return (write(2, "Error\nThread error\n", 20));
+    if (routine_launch(&data) == 1)
+        return (write(2, "Error\nThread error\n", 20));
 }

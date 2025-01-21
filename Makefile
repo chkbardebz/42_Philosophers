@@ -1,7 +1,7 @@
 NAME = philo
 BONUS = philo_bonus
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g -pthread
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 BONUS_SRCS = $(wildcard *_bonus.c)
