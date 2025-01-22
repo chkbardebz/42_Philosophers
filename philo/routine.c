@@ -39,7 +39,8 @@ void	is_dead(t_data *data, t_philo *philo)
 			pthread_mutex_lock(&(data->eating_lock));
 			if ((timestamp() - philo[i].last_meal) > data->time_to_die)
 			{
-				clean_printf(data, i, "has died\n");
+				clean_printf(data, i, "Mort ?");
+				clean_printf(data, i, "died\n");
 				data->has_died = true;
 			}
 			pthread_mutex_unlock(&(data->eating_lock));
@@ -62,9 +63,9 @@ void	eating(t_philo *philo)
 
 	data = philo->data;
 	pthread_mutex_lock(&(data->forks[philo->left]));
-	clean_printf(data, philo->id, "has taken left fork");
+	clean_printf(data, philo->id, "has taken a fork");
 	pthread_mutex_lock(&(data->forks[philo->right]));
-	clean_printf(data, philo->id, "has taken right fork");
+	clean_printf(data, philo->id, "has taken a fork");
 	pthread_mutex_lock(&(data->eating_lock));
 	clean_printf(data, philo->id, "is eating");
 	philo->last_meal = timestamp();
