@@ -24,7 +24,9 @@ void	exit_routine(t_data *data, t_philo *philo)
 		pthread_mutex_destroy(&(data->forks[i]));
 	pthread_mutex_destroy(&(data->printing));
 	free(data->forks);
+	data->forks = NULL;
 	free(data->philo);
+	data->philo = NULL;
 }
 
 void	is_dead(t_data *data, t_philo *philo)
@@ -48,28 +50,57 @@ void	is_dead(t_data *data, t_philo *philo)
 		while (data->number_of_meals != -1 && i < data->number_of_philo
 			&& philo[i].meals_eaten >= data->number_of_meals)
 			i++;
+		pthread_mutex_lock(&(data->eating_lock));
 		if (i == data->number_of_philo)
 			data->has_all_eaten = 1;
+		pthread_mutex_unlock(&(data->eating_lock));
 	}
 }
 
 void	eating(t_philo *philo)
 {
+	// t_data	*data;
+
+	// data = philo->data;
+	// pthread_mutex_lock(&(data->forks[philo->right]));
+	// clean_printf(data, philo->id, "has taken a fork");
+	// pthread_mutex_lock(&(data->forks[philo->left]));
+	// clean_printf(data, philo->id, "has taken a fork");
+	// pthread_mutex_lock(&(data->eating_lock));
+	// clean_printf(data, philo->id, "is eating");
+	// philo->last_meal = timestamp();
+	// pthread_mutex_unlock(&(data->eating_lock));
+	// ft_dodo(data->time_to_eat, data);
+	// (philo->meals_eaten)++;
+	// pthread_mutex_unlock(&(data->forks[philo->left]));
+	// pthread_mutex_unlock(&(data->forks[philo->right]));
 	t_data	*data;
+	int		first_fork;
+	int		second_fork;
 
 	data = philo->data;
-	pthread_mutex_lock(&(data->forks[philo->left]));
+	if (philo->left < philo->right)
+	{
+		first_fork = philo->left;
+		second_fork = philo->right;
+	}
+	else
+	{
+		first_fork = philo->right;
+		second_fork = philo->left;
+	}
+	pthread_mutex_lock(&(data->forks[first_fork]));
 	clean_printf(data, philo->id, "has taken a fork");
-	pthread_mutex_lock(&(data->forks[philo->right]));
+	pthread_mutex_lock(&(data->forks[second_fork]));
 	clean_printf(data, philo->id, "has taken a fork");
 	pthread_mutex_lock(&(data->eating_lock));
 	clean_printf(data, philo->id, "is eating");
 	philo->last_meal = timestamp();
-	pthread_mutex_unlock(&(data->eating_lock));
 	ft_dodo(data->time_to_eat, data);
 	(philo->meals_eaten)++;
-	pthread_mutex_unlock(&(data->forks[philo->left]));
-	pthread_mutex_unlock(&(data->forks[philo->right]));
+	pthread_mutex_unlock(&(data->eating_lock));
+	pthread_mutex_unlock(&(data->forks[second_fork]));
+	pthread_mutex_unlock(&(data->forks[first_fork]));
 }
 
 void	*routine(void *arg)
@@ -82,7 +113,7 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	data = philo->data;
 	if (philo->id % 2)
-		usleep(1000);
+		usleep(15000);
 	while (data->has_died == false)
 	{
 		eating(philo);
