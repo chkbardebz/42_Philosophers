@@ -23,6 +23,14 @@
 //* THINK
 //* REPEAT
 
+void	if_dead(t_data *data, t_philo *philo, int i)
+{
+	clean_printf(data, i, "died\n");
+	if (data->number_of_philo == 1)
+		pthread_mutex_unlock(&(data->forks[philo->right]));
+	data->has_died = true;
+}
+
 int	init_philo(t_data *data)
 {
 	int	i;

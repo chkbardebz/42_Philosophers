@@ -56,5 +56,6 @@ void				clean_printf(t_data *data, int id, char *str);
 long long			timestamp(void);
 void				ft_dodo(long long time, t_data *data);
 int					ft_atoi(const char *str);
+void				if_dead(t_data *data, t_philo *philo, int i);
 
 #endif

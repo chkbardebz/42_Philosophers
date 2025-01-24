@@ -38,11 +38,7 @@ void	is_dead(t_data *data, t_philo *philo)
 		{
 			pthread_mutex_lock(&(data->eating_lock));
 			if ((timestamp() - philo[i].last_meal) > data->time_to_die)
-			{
-				clean_printf(data, i, "Mort ?");
-				clean_printf(data, i, "died\n");
-				data->has_died = true;
-			}
+				if_dead(data, philo, i);
 			pthread_mutex_unlock(&(data->eating_lock));
 			usleep(100);
 		}
