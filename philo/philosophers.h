@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:19:55 by judenis           #+#    #+#             */
-/*   Updated: 2025/01/21 17:53:32 by judenis          ###   ########.fr       */
+/*   Updated: 2025/01/30 13:21:56 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_data
 	pthread_mutex_t	printing;
 	pthread_mutex_t	eating_lock;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	death_lock;
 	t_philo			*philo;
 }					t_data;
 
