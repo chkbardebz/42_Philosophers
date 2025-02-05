@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 15:21:41 by judenis           #+#    #+#             */
-/*   Updated: 2025/02/05 11:39:30 by judenis          ###   ########.fr       */
+/*   Updated: 2025/02/05 12:19:55 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,15 @@ void	*routine(void *arg)
 	data = philo->data;
 	if (philo->id % 2)
 		usleep(1000);
-	while (data->has_died == false)
+	while (1)
 	{
+		pthread_mutex_lock(&(data->death_lock));
+		if (data->has_died == true)
+		{
+			pthread_mutex_unlock(&(data->death_lock));
+			break ;
+		}
+		pthread_mutex_unlock(&(data->death_lock));
 		eating(philo);
 		pthread_mutex_lock(&(data->death_lock));
 		if (data->has_all_eaten == true)
