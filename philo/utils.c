@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 14:52:22 by judenis           #+#    #+#             */
-/*   Updated: 2025/02/05 11:39:16 by judenis          ###   ########.fr       */
+/*   Updated: 2025/02/10 13:57:46 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	ft_dodo(long long time, t_data *data)
 		if (data->has_died == true)
 		{
 			pthread_mutex_unlock(&(data->death_lock));
-			break;
+			break ;
 		}
 		pthread_mutex_unlock(&(data->death_lock));
 		if (timestamp() - i >= time)

@@ -6,32 +6,19 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:17:10 by judenis           #+#    #+#             */
-/*   Updated: 2025/02/05 11:40:11 by judenis          ###   ########.fr       */
+/*   Updated: 2025/02/10 13:57:32 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-//? number_of_philosophers
-//? time_to_die
-//? time_to_eat
-//? time_to_sleep
-//? [number of time each philo needs to eat]
-
-//* EAT
-//* SLEEP
-//* THINK
-//* REPEAT
-
 void	if_dead(t_data *data, t_philo *philo, int i)
 {
 	(void)philo;
 	clean_printf(data, i, "died\n");
-	// if (data->number_of_philo == 1)
-	// 	pthread_mutex_unlock(&(data->forks[philo->right]));
 	pthread_mutex_lock(&(data->death_lock));
 	data->has_died = true;
-	pthread_mutex_unlock(&(data->death_lock));	
+	pthread_mutex_unlock(&(data->death_lock));
 }
 
 int	init_philo(t_data *data)

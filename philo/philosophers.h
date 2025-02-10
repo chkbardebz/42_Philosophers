@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:19:55 by judenis           #+#    #+#             */
-/*   Updated: 2025/02/05 11:39:50 by judenis          ###   ########.fr       */
+/*   Updated: 2025/02/10 14:27:24 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct s_data
 	long long		start_time;
 	bool			has_died;
 	bool			has_all_eaten;
-	pthread_mutex_t death_lock;
+	pthread_mutex_t	death_lock;
 	pthread_mutex_t	printing;
 	pthread_mutex_t	eating_lock;
 	pthread_mutex_t	*forks;
@@ -51,12 +51,16 @@ typedef struct s_data
 }					t_data;
 
 int					routine_launch(t_data *data);
-
 int					check_args(char **av);
 void				clean_printf(t_data *data, int id, char *str);
 long long			timestamp(void);
 void				ft_dodo(long long time, t_data *data);
 int					ft_atoi(const char *str);
 void				if_dead(t_data *data, t_philo *philo, int i);
+int					routine_launch_one(t_data *data, t_philo *philo);
+void				is_dead(t_data *data, t_philo *philo);
+void				exit_routine(t_data *data, t_philo *philo);
+int					sleeping(t_data *data, t_philo *philo);
+void				eating(t_philo *philo);
 
 #endif
