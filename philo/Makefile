@@ -1,7 +1,7 @@
 NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g3 -pthread
-SRCS = $(wildcard *.c)
+SRCS = check.c main.c routine.c utils_routine.c utils.c
 OBJS = $(SRCS:.c=.o)
 RM = rm -f
 
