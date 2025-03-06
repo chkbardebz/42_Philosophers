@@ -12,43 +12,30 @@
 
 #include "philosophers.h"
 
-void	eating_process(t_philo *philo, t_data *data, int first_fork,
-		int second_fork)
+void	eating_process(t_philo *philo, t_data *data)
 {
-	pthread_mutex_lock(&(data->forks[first_fork]));
+	int l = philo->left;
+	int r = philo->right;
+	pthread_mutex_lock(&(data->forks[l]));
 	clean_printf(data, philo->id, "has taken a fork");
-	pthread_mutex_lock(&(data->forks[second_fork]));
+	pthread_mutex_lock(&(data->forks[r]));
 	clean_printf(data, philo->id, "has taken a fork");
 	pthread_mutex_lock(&(data->eating_lock));
 	clean_printf(data, philo->id, "is eating");
 	philo->last_meal = timestamp();
-	pthread_mutex_unlock(&(data->eating_lock));
-	ft_dodo(data->time_to_eat, data);
-	pthread_mutex_lock(&(data->eating_lock));
 	(philo->meals_eaten)++;
 	pthread_mutex_unlock(&(data->eating_lock));
-	pthread_mutex_unlock(&(data->forks[second_fork]));
-	pthread_mutex_unlock(&(data->forks[first_fork]));
+	ft_dodo(data->time_to_eat, data);
+	pthread_mutex_unlock(&(data->forks[r]));
+	pthread_mutex_unlock(&(data->forks[l]));
 }
 
 void	eating(t_philo *philo)
 {
 	t_data	*data;
-	int		first_fork;
-	int		second_fork;
 
 	data = philo->data;
-	if (philo->left < philo->right)
-	{
-		first_fork = philo->left;
-		second_fork = philo->right;
-	}
-	else
-	{
-		first_fork = philo->right;
-		second_fork = philo->left;
-	}
-	eating_process(philo, data, first_fork, second_fork);
+	eating_process(philo, data);
 }
 
 //! peut etre cause pb de performances

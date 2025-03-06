@@ -15,7 +15,7 @@
 void	if_dead(t_data *data, t_philo *philo, int i)
 {
 	(void)philo;
-	clean_printf(data, i, "died\n");
+	clean_printf(data, i, "died");
 	pthread_mutex_lock(&(data->death_lock));
 	data->has_died = true;
 	pthread_mutex_unlock(&(data->death_lock));
@@ -26,7 +26,7 @@ int	init_philo(t_data *data)
 	int	i;
 
 	i = data->number_of_philo;
-	data->philo = (t_philo *)malloc(sizeof(t_philo) * data->number_of_philo);
+	data->philo = (t_philo *)malloc(sizeof(t_philo) * (data->number_of_philo));
 	if (data->philo == NULL)
 		return (1);
 	while (--i >= 0)
@@ -45,15 +45,16 @@ int	init_forks(t_data *data)
 {
 	int	i;
 
-	i = data->number_of_philo;
+	i = 0;
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
-			* data->number_of_philo);
+* data->number_of_philo);
 	if (data->forks == NULL)
 		return (1);
-	while (--i >= 0)
+	while (i < data->number_of_philo)
 	{
 		if (pthread_mutex_init(&(data->forks[i]), NULL))
 			return (1);
+		i++;
 	}
 	if (pthread_mutex_init(&(data->death_lock), NULL))
 		return (1);

@@ -43,6 +43,7 @@ typedef struct s_data
 	long long		start_time;
 	bool			has_died;
 	bool			has_all_eaten;
+	pthread_mutex_t	global;	
 	pthread_mutex_t	death_lock;
 	pthread_mutex_t	printing;
 	pthread_mutex_t	eating_lock;
