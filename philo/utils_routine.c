@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 14:03:07 by judenis           #+#    #+#             */
-/*   Updated: 2025/02/10 14:28:01 by judenis          ###   ########.fr       */
+/*   Updated: 2025/03/06 12:52:55 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,17 @@
 
 void	eating_process(t_philo *philo, t_data *data)
 {
-	int l = philo->left;
-	int r = philo->right;
-	pthread_mutex_lock(&(data->forks[l]));
-	clean_printf(data, philo->id, "has taken a fork");
-	pthread_mutex_lock(&(data->forks[r]));
-	clean_printf(data, philo->id, "has taken a fork");
+	lock_forks(philo, data);
 	pthread_mutex_lock(&(data->eating_lock));
 	clean_printf(data, philo->id, "is eating");
 	philo->last_meal = timestamp();
 	(philo->meals_eaten)++;
 	pthread_mutex_unlock(&(data->eating_lock));
 	ft_dodo(data->time_to_eat, data);
-	pthread_mutex_unlock(&(data->forks[r]));
-	pthread_mutex_unlock(&(data->forks[l]));
+	if (philo->id % 2 == 0)
+		unlock_even(philo, data);
+	else
+		unlock_odd(philo, data);
 }
 
 void	eating(t_philo *philo)
@@ -51,6 +48,8 @@ int	sleeping(t_data *data, t_philo *philo)
 	clean_printf(data, philo->id, "is sleeping");
 	ft_dodo(data->time_to_sleep, data);
 	clean_printf(data, philo->id, "is thinking");
+	ft_dodo((data->time_to_eat > data->time_to_sleep) * (data->time_to_eat
+			- data->time_to_sleep) + 1, data);
 	return (0);
 }
 

@@ -81,7 +81,7 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	data = philo->data;
 	if (philo->id % 2 == 0)
-		usleep(1000);
+		ft_dodo(data->time_to_eat, data);
 	while (1)
 	{
 		pthread_mutex_lock(&(data->death_lock));

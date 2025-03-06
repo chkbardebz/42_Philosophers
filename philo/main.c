@@ -37,6 +37,8 @@ int	init_philo(t_data *data)
 		data->philo[i].left = i;
 		data->philo[i].right = (i + 1) % data->number_of_philo;
 		data->philo[i].data = data;
+		data->philo[i].l_lock = false;
+		data->philo[i].r_lock = false;
 	}
 	return (0);
 }
@@ -47,7 +49,7 @@ int	init_forks(t_data *data)
 
 	i = 0;
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
-* data->number_of_philo);
+			* data->number_of_philo);
 	if (data->forks == NULL)
 		return (1);
 	while (i < data->number_of_philo)
